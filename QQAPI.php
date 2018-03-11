@@ -73,9 +73,9 @@
                  }
         }
 
-        /**
-         * 根据access_token获取openid
-         */
+    	 /**
+	 *用access_token获取openid
+	 */
         private function get_openid(){
                 if(isset($this->access_token)){
                     $url="https://graph.qq.com/oauth2.0/me?".$this->access_token;
