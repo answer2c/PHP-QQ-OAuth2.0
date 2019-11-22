@@ -1,5 +1,5 @@
 <?php
-	class QQAPI{
+	class QqApi{
         private $code;  //授权码
         private $redirect_url; //重定向地址
         private $appid;
@@ -32,8 +32,8 @@
          */
         public function returnData(){
                 if(isset($this->code)){
-                        $this->get_AccessToken();
-                        $this->data=$this->get_openid();
+                        $this->getAccessToken();
+                        $this->data=$this->getOpenId();
                         return $this->data;
                 }else{
                         exit('失败');
@@ -58,7 +58,7 @@
         /**
          * 根据授权码code 获取access_token
          */
-        private function get_AccessToken(){
+        private function getAccessToken(){
                 $url='https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id='.$this->appid.
                 '&client_secret='.$this->app_secret.'&code='.$this->code.'&redirect_uri='.$this->redirect_url;
                  $receive=$this->curl_get($url);
@@ -76,14 +76,14 @@
     	 /**
 	 *用access_token获取openid
 	 */
-        private function get_openid(){
+        private function getOpenId(){
                 if(isset($this->access_token)){
                     $url="https://graph.qq.com/oauth2.0/me?".$this->access_token;
                     $receive=$this->curl_get($url);
                     //如果接受的数据包含openid 代表返回成功
                     if(strpos($receive,"openid")){
-                        $data_json=substr($receive,9,-3);//对接受到的数据进行处理，只留下其中我们需要的json格式的数据
-                        $data=json_decode($data_json,true);//对json数据进行处理
+                        $dataJson=substr($receive,9,-3);//对接受到的数据进行处理，只留下其中我们需要的json格式的数据
+                        $data=json_decode($dataJson,true);//对json数据进行处理
                         $userData=$this->getUserData($data);                       
                         return $userData;
 
@@ -106,8 +106,8 @@
         private function getUserData($data){
                 $getUserUrl='https://graph.qq.com/user/get_user_info?'.$this->access_token.'&oauth_consumer_key='.
                 $data["client_id"].'&openid='.$data["openid"];
-                $userData_json=$this->curl_get($getUserUrl); //得到json格式的用户数据
-                $userData=json_decode($userData_json,true);
+                $userDataJson=$this->curl_get($getUserUrl); //得到json格式的用户数据
+                $userData=json_decode($userDataJson,true);
                 //判断返回的信息是否包含用户信息
                 if(isset($userData['nickname'])){
                         return $userData;
